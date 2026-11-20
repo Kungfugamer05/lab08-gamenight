@@ -23,6 +23,28 @@ Directory.SetCurrentDirectory(projectFolder);
 
 System.Console.WriteLine("=== GAME NIGHT LEADERBOARD ===");
 
+//Part 3: Read the old game night results
+string[] history = File.ReadAllLines(HISTORY_FILE);
+int tonightNumber = history.Length + 1;
+
+if (history.Length == 0)
+{
+    System.Console.WriteLine("No nights played yet.");
+}
+else
+{
+    System.Console.WriteLine("Nights played: " + history.Length);
+
+    // foreach: Every line of the history needs to be printed
+    foreach (string night in history)
+    {
+        System.Console.WriteLine(" " + night);
+    }
+}
+
+System.Console.WriteLine("Tonight is Night " + tonightNumber + ".");
+System.Console.WriteLine();
+
 //Part 1: Read the players and show the standings 
 string[] players = File.ReadAllLines(PLAYERS_FILE);
 string[] points = File.ReadAllLines(POINTS_FILE);
@@ -77,6 +99,11 @@ System.Console.WriteLine();
 File.WriteAllLines(POINTS_FILE, points);
 System.Console.WriteLine("Saved points.txt.");
 
+//Part 3: Add tonight's winner to the history file
+string[] entry = { HistoryEntry(tonightNumber, winnerTonight, bestTonight) };
+File.AppendAllLines(HISTORY_FILE, entry);
+System.Console.WriteLine("Added to history.txt: " + entry[0]);
+
 // Returns the position of the highest season score
 static int LeaderIndex(string[] points)
 {
@@ -108,3 +135,8 @@ static int TotalPoints(string[] points)
     return total;
 }
 
+// Returns a line that can be saved in the game history 
+static string HistoryEntry(int night, string winner, int points)
+{
+    return "Night " + night + ": " + winner + " won with " + points + " points";
+}
